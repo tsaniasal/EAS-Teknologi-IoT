@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard NN and Fuzzy Logic Simulation</title>
+    <style>
+        /* Font and background */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #5e9ff48b, #2a09e0); /* Gradient background */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Container styling */
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            padding: 40px;
+            background-color: #fffcdf;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
+            background-image: url('https://www.transparenttextures.com/patterns/cubes.png'); /* Cute pattern */
+        }
+
+        .container:hover {
+            transform: scale(1.02);
+        }
+
+        /* Heading */
+        h1 {
+            color: #000000;
+            font-size: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Cute icon for header */
+        .header-icon {
+            display: block;
+            margin: 20px auto;
+            width: 100px;
+            height: 100px;
+        }
+
+        /* Input form styling */
+        .input-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .input-form label {
+            font-size: 18px;
+            color: #333333;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        .input-form input {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 2px solid #3906ba;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .input-form input:focus {
+            border-color: #4800ff83;
+            box-shadow: 0 0 10px rgba(255, 99, 71, 0.5);
+        }
+
+        .button {
+            padding: 15px 30px;
+            font-size: 18px;
+            background-color: #47b5ff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #1f7491;
+        }
+
+        /* Result section */
+        .result {
+            margin-top: 40px;
+            font-size: 1.2em;
+            color: #1119f9;
+            background-color: #fef9e4;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0);
+        }
+
+        .result h3 {
+            color: #1b25ea;
+            font-size: 24px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .result p {
+            margin: 15px 0;
+            color: #555;
+            font-weight: bold;
+        }
+
+        .result span {
+            color: #1809f4;
+            font-weight: normal;
+        }
+
+        /* Cute image for result section */
+        .result img {
+            width: 80px;
+            margin: 10px auto;
+            display: block;
+        }
+
+        /* Animation for result */
+        .result p {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        .result p:nth-child(odd) {
+            animation-delay: 0.5s;
+        }
+
+        .result p:nth-child(even) {
+            animation-delay: 1s;
+        }
+
+        /* Keyframe for fade-in effect */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Dashboard NN and Fuzzy Logic Simulation</h1>
+
+    <!-- Cute header image -->
+    <img src="https://cdn-icons-png.flaticon.com/512/252/252025.png" alt="Sensor Icon" class="header-icon">
+    
+    <form class="input-form" id="sensorForm" action="/process" method="POST">
+        <label for="suhu">Suhu (°C):</label>
+        <input type="number" id="suhu" name="suhu" required><br>
+
+        <label for="tegangan">Tegangan (V):</label>
+        <input type="number" id="tegangan" name="tegangan" required><br>
+
+        <label for="arus">Arus (A):</label>
+        <input type="number" id="arus" name="arus" required><br>
+
+        <label for="ultrasonik">Ultrasonik (cm):</label>
+        <input type="number" id="ultrasonik" name="ultrasonik" required><br>
+
+        <label for="radiasi">Radiasi (μSv):</label>
+        <input type="number" id="radiasi" name="radiasi" required><br>
+
+        <button class="button" type="submit">Proses Sensor</button>
+    </form>
+
+    <div class="result">
+        <h3>Output Aktuator:</h3>
+        
+        <!-- Cute result icon -->
+        <img src="https://cdn-icons-png.flaticon.com/512/252/252025.png" alt="Result Icon">
+
+        <p>Motor Speed (Fuzzy Logic)        : <span>{{ motor_speed }}</span> rpm</p>
+        <p>Motor Speed (Neural Network)     : <span>{{ nn_motor }}</span> rpm</p>
+        <p>Linear Actuator (Fuzzy Logic)    : <span>{{ linear_actuator }}</span> cm</p>
+        <p>Linear Actuator (Neural Network) : <span>{{ nn_linear }}</span> cm</p>
+        <p>Pompa Air (Fuzzy Logic)          : <span>{{ pompa_air }}</span> l/min</p>
+        <p>Pompa Air (Neural Network)       : <span>{{ nn_pompa }}</span> l/min</p>
+        <p>Rel Geser (Fuzzy Logic)          : <span>{{ rel }}</span> cm</p>
+        <p>Rel Geser (Neural Network)       : <span>{{ nn_rel }}</span> cm</p>
+        <p>Nozzle Sprayer (Fuzzy Logic)     : <span>{{ nozzle }}</span> l/min</p>
+        <p>Nozzle Sprayer (Neural Network)  : <span>{{ nn_nozzle }}</span> l/min</p>
+    </div>
+    
+</div>
+
+</body>
+</html>
